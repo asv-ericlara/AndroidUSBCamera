@@ -1,16 +1,17 @@
 plugins {
     id 'com.android.library'
     id 'kotlin-android'
+   id 'maven-publish'
 }
 
 android {
-    compileSdkVersion 31
+    compileSdk rootProject.ext.versionCompiler
 
     defaultConfig {
-        minSdkVersion 19
-        targetSdkVersion 31
+        minSdk rootProject.ext.minSdkVersion
+        targetSdk rootProject.ext.versionTarget
         versionCode 2
-        versionName "1.0.1"
+        versionName rootProject.ext.versionNameString
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -23,6 +24,14 @@ android {
             }
         }
     }
+    // Specify NDK version
+   // ndkVersion "21.4.7075529"
+
+//    externalNativeBuild {
+//        cmake {
+//            path "CMakeLists.txt"
+//        }
+//    }
 
     buildTypes {
         release {
@@ -43,6 +52,7 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+  ///  ndkVersion '21.4.7075529'
 }
 
 dependencies {
@@ -53,4 +63,17 @@ dependencies {
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+}
+publishing {
+    publications {
+        release(MavenPublication) {
+            groupId = 'com.github.asv-ericlara'
+            artifactId = 'libnative'
+            version = '3.6.5'
+
+            afterEvaluate {
+                from components.release
+            }
+        }
+    }
 }

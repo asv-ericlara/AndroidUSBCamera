@@ -33,6 +33,8 @@
 #include "util.h"
 #include "quantize_pvt.h"
 #include "tables.h"
+#include <stdlib.h>
+#include <string.h>
 
 
 static const struct {

@@ -1,14 +1,16 @@
 plugins {
     id 'com.android.library'
     id 'kotlin-android'
+    id 'maven-publish'
 }
 
 android {
-    compileSdkVersion rootProject.ext.versionCompiler
+
+    compileSdk rootProject.ext.versionCompiler
 
     defaultConfig {
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.versionTarget
+        minSdk rootProject.ext.minSdkVersion
+        targetSdk rootProject.ext.versionTarget
         versionCode rootProject.ext.versionCode
         versionName rootProject.ext.versionNameString
 
@@ -40,4 +42,18 @@ dependencies {
 
     implementation project(path: ':libuvc')
     api project(path: ':libnative')
+}
+
+publishing {
+    publications {
+        release(MavenPublication) {
+            groupId = 'com.github.asv-ericlara'
+            artifactId = 'libausbc'
+            version = '3.6.5'
+
+            afterEvaluate {
+                from components.release
+            }
+        }
+    }
 }

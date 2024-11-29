@@ -134,10 +134,9 @@ class PreviewImageView: AppCompatImageView {
         initBorderPath(w, h)
     }
 
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-    override fun onDraw(canvas: Canvas?) {
+    override fun onDraw(canvas: Canvas) {
         try {
-            canvas?.saveLayer(mSrcRectF, null)
+            canvas.saveLayer(mSrcRectF, null)
             // 缩小画布
 //            val sx = 1.0f * (width - borderWidth) / width
 //            val sy  = 1.0f * (height - borderWidth) / height
@@ -272,7 +271,7 @@ class PreviewImageView: AppCompatImageView {
         val progress = PropertyValuesHolder.ofFloat("progress", getProgress(), 1.0f)
         mBreathAnimation = ObjectAnimator.ofPropertyValuesHolder(this,  scaleX,  scaleY, progress).apply {
             addListener(object :AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator?) {
+                override fun onAnimationEnd(animation: Animator) {
                     super.onAnimationEnd(animation)
                     isNewImageLoading = false
                     setProgress(0.0f)

@@ -1,10 +1,11 @@
-apply plugin: 'com.android.library'
-
+plugins {
+	id 'com.android.library'
+	id 'maven-publish'
+}
 import org.apache.tools.ant.taskdefs.condition.Os
 
 android {
-	compileSdkVersion rootProject.ext.versionCompiler
-	buildToolsVersion rootProject.ext.versionBuildTool
+	compileSdk rootProject.ext.versionCompiler
 
 	compileOptions {
 		sourceCompatibility rootProject.ext.javaSourceCompatibility
@@ -12,8 +13,17 @@ android {
 	}
 
     defaultConfig {
-        minSdkVersion rootProject.ext.minSdkVersion
-		targetSdkVersion rootProject.ext.versionTarget
+        minSdk rootProject.ext.minSdkVersion
+		targetSdk rootProject.ext.versionTarget
+
+		externalNativeBuild {
+			cmake {
+				cppFlags ""
+			}
+			ndk{
+				abiFilters 'armeabi-v7a','arm64-v8a', "x86", "x86_64"
+			}
+		}
     }
 
 	lintOptions {
@@ -31,41 +41,56 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
+//	ndkVersion '24.1.7075529'
 }
 
-tasks.withType(JavaCompile) {
-	compileTask -> compileTask.dependsOn ndkBuild
-}
+publishing {
+	publications {
+		release(MavenPublication) {
+			groupId = 'com.github.asv-ericlara'
+			artifactId = 'libuvc'
+			version = '3.6.5'
 
-String getNdkBuildPath() {
-	def ndkBuildingDir = System.getenv("NDK_HOME")
-	if (ndkBuildingDir==null || ndkBuildingDir.isEmpty()) {
-		Properties properties = new Properties()
-		properties.load(project.rootProject.file('local.properties').newDataInputStream())
-		ndkBuildingDir = properties.getProperty("ndk.dir")
+			afterEvaluate {
+				from components.release
+			}
+		}
 	}
-	def ndkBuildPath = ndkBuildingDir
-	if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-		ndkBuildPath = ndkBuildingDir + '/ndk-build.cmd'
-	} else {
-		ndkBuildPath = ndkBuildingDir + '/ndk-build'
-	}
-	return ndkBuildPath
 }
+//tasks.withType(JavaCompile) {
+//	compileTask -> compileTask.dependsOn ndkBuild
+//}
 
-task ndkBuild(type: Exec, description: 'Compile JNI source via NDK') {
-	println('executing ndkBuild')
-	def ndkBuildPath = getNdkBuildPath();
-	commandLine ndkBuildPath, '-j8', '-C', file('src/main').absolutePath
-}
-
-task ndkClean(type: Exec, description: 'clean JNI libraries') {
-	println('executing ndkBuild clean')
-	def ndkBuildPath = getNdkBuildPath();
-	commandLine ndkBuildPath, 'clean', '-C', file('src/main').absolutePath
-}
-
-clean.dependsOn 'ndkClean'
+//String getNdkBuildPath() {
+//	def ndkBuildingDir = System.getenv("NDK_HOME")
+//	if (ndkBuildingDir==null || ndkBuildingDir.isEmpty()) {
+//		Properties properties = new Properties()
+//		properties.load(project.rootProject.file('local.properties').newDataInputStream())
+//		ndkBuildingDir = properties.getProperty("ndk.dir")
+//	}
+//	def ndkBuildPath = ndkBuildingDir
+//	if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+//		ndkBuildPath = ndkBuildingDir + '/ndk-build.cmd'
+//	} else {
+//		ndkBuildPath = ndkBuildingDir + '/ndk-build'
+//	}
+//	println("ndkBuildPath::$ndkBuildPath")
+//	return ndkBuildPath
+//}
+//
+//task ndkBuild(type: Exec, description: 'Compile JNI source via NDK') {
+//	println('executing ndkBuild')
+//	def ndkBuildPath = getNdkBuildPath();
+//	commandLine ndkBuildPath, '-j8', '-C', file('src/main').absolutePath
+//}
+//
+//task ndkClean(type: Exec, description: 'clean JNI libraries') {
+//	println('executing ndkBuild clean')
+//	def ndkBuildPath = getNdkBuildPath();
+//	commandLine ndkBuildPath, 'clean', '-C', file('src/main').absolutePath
+//}
+//
+//clean.dependsOn 'ndkClean'
 
 dependencies {
     implementation fileTree(dir: new File(buildDir, 'libs'), include: '*.jar')

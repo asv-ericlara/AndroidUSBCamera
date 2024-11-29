@@ -31,6 +31,8 @@
 #include "encoder.h"
 #include "util.h"
 #include "tables.h"
+#include <stdlib.h>
+#include <string.h>
 
 #define PRECOMPUTE
 #if defined(__FreeBSD__) && !defined(__alpha__)

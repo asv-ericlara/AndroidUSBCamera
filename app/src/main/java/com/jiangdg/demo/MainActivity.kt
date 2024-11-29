@@ -16,6 +16,7 @@
 package com.jiangdg.demo
 
 import android.Manifest.permission.*
+import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
 import androidx.appcompat.app.AppCompatActivity
@@ -62,16 +63,29 @@ class MainActivity : AppCompatActivity() {
     private fun replaceDemoFragment(fragment: Fragment) {
         val hasCameraPermission = PermissionChecker.checkSelfPermission(this, CAMERA)
         val hasStoragePermission =
-            PermissionChecker.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                PermissionChecker.checkSelfPermission(this, READ_MEDIA_VIDEO)
+            } else {
+                PermissionChecker.checkSelfPermission(this,  WRITE_EXTERNAL_STORAGE)
+            }
         if (hasCameraPermission != PermissionChecker.PERMISSION_GRANTED || hasStoragePermission != PermissionChecker.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, CAMERA)) {
                 ToastUtils.show(R.string.permission_tip)
             }
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(CAMERA, WRITE_EXTERNAL_STORAGE, RECORD_AUDIO),
-                REQUEST_CAMERA
-            )
+            if (hasCameraPermission != PermissionChecker.PERMISSION_GRANTED){
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(CAMERA, WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE,READ_MEDIA_VIDEO, READ_MEDIA_IMAGES,RECORD_AUDIO),
+                    REQUEST_CAMERA
+                )
+            }else if(hasStoragePermission == -1){
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf( WRITE_EXTERNAL_STORAGE, READ_MEDIA_VIDEO, READ_MEDIA_IMAGES,),
+                    REQUEST_STORAGE
+                )
+            }
+
             return
         }
         val transaction = supportFragmentManager.beginTransaction()
@@ -92,8 +106,8 @@ class MainActivity : AppCompatActivity() {
                     ToastUtils.show(R.string.permission_tip)
                     return
                 }
-//                replaceDemoFragment(DemoMultiCameraFragment())
-                replaceDemoFragment(DemoFragment())
+         //       replaceDemoFragment(DemoMultiCameraFragment())
+       replaceDemoFragment(DemoFragment())
 //                replaceDemoFragment(GlSurfaceFragment())
             }
             REQUEST_STORAGE -> {

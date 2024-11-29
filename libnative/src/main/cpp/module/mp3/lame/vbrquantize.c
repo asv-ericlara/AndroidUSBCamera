@@ -33,7 +33,8 @@
 #include "util.h"
 #include "vbrquantize.h"
 #include "quantize_pvt.h"
-
+#include <stdlib.h>
+#include <string.h>
 
 
 

@@ -46,6 +46,8 @@
 #include "version.h"
 #include "VbrTag.h"
 #include "tables.h"
+#include <stdlib.h>
+#include <string.h>
 
 
 #if defined(__FreeBSD__) && !defined(__alpha__)
