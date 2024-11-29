@@ -24,6 +24,5 @@ import android.net.Uri
 interface ICaptureCallBack {
     fun onBegin()
     fun onError(error: String?)
-    fun onComplete(path: String?)
-    fun onCompleteUri(uri: Uri?)
+    fun onComplete(uri: Uri?)
 }

@@ -252,7 +252,7 @@ class Mp4Muxer(
                 val uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
                 val uri2 = content.insert(uri, getVideoContentValues(videoPath))
                 mMainHandler.post {
-                    mCaptureCallBack?.onCompleteUri(uri2)
+                    mCaptureCallBack?.onComplete(uri2)
                     //mCaptureCallBack?.onComplete(this.path)
                 }
             }

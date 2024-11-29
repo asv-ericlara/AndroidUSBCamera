@@ -108,9 +108,9 @@ class Camera1Strategy(ctx: Context) : ICameraStrategy(ctx), Camera.PreviewCallba
                 values.put(MediaStore.Images.ImageColumns.ORIENTATION, orientation)
                 values.put(MediaStore.Images.ImageColumns.LONGITUDE, location?.longitude)
                 values.put(MediaStore.Images.ImageColumns.LATITUDE, location?.latitude)
-                getContext()?.contentResolver?.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+                val uri = getContext()?.contentResolver?.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
                 mMainHandler.post {
-                    mCaptureDataCb?.onComplete(path)
+                    mCaptureDataCb?.onComplete(uri)
                 }
                 stopPreviewInternal()
                 startPreviewInternal()

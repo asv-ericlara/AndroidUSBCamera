@@ -289,9 +289,9 @@ class CameraUVC(ctx: Context, device: UsbDevice) : MultiCameraClient.ICamera(ctx
             values.put(MediaStore.Images.ImageColumns.DATE_TAKEN, date)
             values.put(MediaStore.Images.ImageColumns.LONGITUDE, location?.longitude)
             values.put(MediaStore.Images.ImageColumns.LATITUDE, location?.latitude)
-            ctx.contentResolver?.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+            val uri = ctx.contentResolver?.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
             mMainHandler.post {
-                callback.onComplete(path)
+                callback.onComplete(uri)
             }
             if (Utils.debugCamera) { Logger.i(TAG, "captureImageInternal save path = $path") }
         }

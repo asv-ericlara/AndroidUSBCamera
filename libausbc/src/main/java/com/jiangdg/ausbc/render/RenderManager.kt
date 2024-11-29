@@ -472,9 +472,9 @@ class RenderManager(
         values.put(MediaStore.Images.ImageColumns.DATE_TAKEN, date)
         values.put(MediaStore.Images.ImageColumns.WIDTH, width)
         values.put(MediaStore.Images.ImageColumns.HEIGHT, height)
-        mContext.contentResolver?.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+        val uri = mContext.contentResolver?.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
         mMainHandler.post {
-            mCaptureDataCb?.onComplete(path)
+            mCaptureDataCb?.onComplete(uri)
         }
         mCaptureState.set(false)
         if (Utils.debugCamera) {

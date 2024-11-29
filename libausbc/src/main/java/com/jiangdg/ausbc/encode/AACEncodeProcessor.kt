@@ -16,6 +16,7 @@
 package com.jiangdg.ausbc.encode
 
 import android.media.*
+import android.net.Uri
 import android.os.Process
 import com.jiangdg.ausbc.callback.ICaptureCallBack
 import com.jiangdg.ausbc.callback.IEncodeDataCallBack
@@ -257,8 +258,9 @@ class AACEncodeProcessor(strategy: IAudioStrategy? = null) : AbstractProcessor(f
                     fos = null
                     LameMp3.lameClose()
                     releaseAudioRecord()
+                    val audioUri = Uri.fromFile(File(audioPath!!)) // Convert file path to Uri
                     mMainHandler.post {
-                        callBack.onComplete(audioPath)
+                        callBack.onComplete(audioUri)
                     }
                     if (Utils.debugCamera) {
                         Logger.i(TAG, "stop record mp3 success.")
