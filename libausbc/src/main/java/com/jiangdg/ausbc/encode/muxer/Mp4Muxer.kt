@@ -250,9 +250,10 @@ class Mp4Muxer(
             }
             ctx.contentResolver.let { content ->
                 val uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
-                content.insert(uri, getVideoContentValues(videoPath))
+                val uri2 = content.insert(uri, getVideoContentValues(videoPath))
                 mMainHandler.post {
-                    mCaptureCallBack?.onComplete(this.path)
+                    mCaptureCallBack?.onCompleteUri(uri2)
+                    //mCaptureCallBack?.onComplete(this.path)
                 }
             }
         }
@@ -261,7 +262,7 @@ class Mp4Muxer(
     private fun getVideoContentValues(path: String): ContentValues {
         val file = File(path)
         val values = ContentValues()
-        values.put(MediaStore.Video.Media.DATA, path)
+        //values.put(MediaStore.Video.Media.DATA, path)
         values.put(MediaStore.Video.Media.DISPLAY_NAME, file.name)
         values.put(MediaStore.Video.Media.MIME_TYPE, "video/mp4")
         values.put(MediaStore.Video.Media.SIZE, file.length())
