@@ -267,9 +267,9 @@ class Mp4Muxer(
                         }
                     }
                     val values = ContentValues()
-                    values.put(MediaStore.Video.Media.DURATION, getLocalVideoDuration(ctx, uri))
+                    values.put(MediaStore.Video.Media.DURATION, getLocalVideoDuration(ctx, it))
                     content.update(it, values, null, null)
-                    mMainHandler.post { mCaptureCallBack?.onComplete(uri) }
+                    mMainHandler.post { mCaptureCallBack?.onComplete(it) }
                 } ?: Logger.e(TAG, "Failed to insert video")
                 /*
                 val uri2 = content.insert(uri, getVideoContentValues(videoPath))
