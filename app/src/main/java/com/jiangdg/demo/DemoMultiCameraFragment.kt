@@ -2,6 +2,7 @@ package com.jiangdg.demo
 
 import android.content.Context
 import android.hardware.usb.UsbDevice
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -118,8 +119,8 @@ class DemoMultiCameraFragment : MultiCameraFragment(), ICameraStateCallBack {
                             ToastUtils.show(error ?: "capture image failed")
                         }
 
-                        override fun onComplete(path: String?) {
-                            ToastUtils.show(path ?: "capture image success")
+                        override fun onComplete(uri: Uri?) {
+                            ToastUtils.show("${uri?.path}" ?: "capture image success")
                         }
                     })
                 }
@@ -138,9 +139,9 @@ class DemoMultiCameraFragment : MultiCameraFragment(), ICameraStateCallBack {
                             ToastUtils.show(error ?: "capture video failed")
                         }
 
-                        override fun onComplete(path: String?) {
+                        override fun onComplete(uri: Uri?) {
                             mAdapter.notifyItemChanged(position, "video")
-                            ToastUtils.show(path ?: "capture video success")
+                            ToastUtils.show("${uri?.path}" ?: "capture video success")
                         }
                     })
                 }

@@ -25,6 +25,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Typeface
 import android.hardware.usb.UsbDevice
+import android.net.Uri
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
@@ -362,7 +363,7 @@ class DemoFragment : CameraFragment(), View.OnClickListener, CaptureMediaView.On
                 stopMediaTimer()
             }
 
-            override fun onComplete(path: String?) {
+            override fun onComplete(uri: Uri?) {
                 isCapturingVideoOrAudio = false
                 mViewBinding.captureBtn.setCaptureVideoState(CaptureMediaView.CaptureVideoState.UNDO)
                 mViewBinding.modeSwitchLayout.visibility = View.VISIBLE
@@ -371,7 +372,7 @@ class DemoFragment : CameraFragment(), View.OnClickListener, CaptureMediaView.On
                 mViewBinding.lensFacingBtn1.visibility = View.VISIBLE
                 mViewBinding.recTimerLayout.visibility = View.GONE
                 stopMediaTimer()
-                ToastUtils.show(path ?: "error")
+                ToastUtils.show("${uri?.path}" ?: "error")
             }
 
         })
@@ -401,8 +402,8 @@ class DemoFragment : CameraFragment(), View.OnClickListener, CaptureMediaView.On
                 stopMediaTimer()
             }
 
-            override fun onComplete(path: String?) {
-                ToastUtils.show(path ?: "")
+            override fun onComplete(uri: Uri?) {
+                ToastUtils.show("${uri?.path}" ?: "")
                 isCapturingVideoOrAudio = false
                 mViewBinding.captureBtn.setCaptureVideoState(CaptureMediaView.CaptureVideoState.UNDO)
                 mViewBinding.modeSwitchLayout.visibility = View.VISIBLE
@@ -431,7 +432,7 @@ class DemoFragment : CameraFragment(), View.OnClickListener, CaptureMediaView.On
                 mViewBinding.albumPreviewIv.setNewImageFlag(false)
             }
 
-            override fun onComplete(path: String?) {
+            override fun onComplete(uri: Uri?) {
                 showRecentMedia(true)
                 mViewBinding.albumPreviewIv.setNewImageFlag(false)
             }
