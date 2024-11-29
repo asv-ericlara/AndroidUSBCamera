@@ -21,6 +21,7 @@ import android.media.MediaCodec
 import android.media.MediaFormat
 import android.media.MediaMetadataRetriever
 import android.media.MediaMuxer
+import android.net.Uri
 import android.os.Environment
 import android.os.Handler
 import android.os.Looper
@@ -246,27 +247,47 @@ class Mp4Muxer(
     private fun insertDCIM(context: Context?, videoPath: String?, notifyOut: Boolean = false) {
         context?.let { ctx ->
             if (videoPath.isNullOrEmpty()) {
+                Logger.w(TAG,"video path is null or empty")
+                return
+            }
+            val file = File(videoPath)
+            if (!file.exists()) {
+                Logger.w(TAG,"Video file does not exist")
                 return
             }
             ctx.contentResolver.let { content ->
                 val uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+                val contentValues = ContentValues().apply {
+                    put(MediaStore.Video.Media.DISPLAY_NAME, file.name)
+                    put(MediaStore.Video.Media.MIME_TYPE, "video/mp4")
+                    put(MediaStore.Video.Media.SIZE, file.length())
+                }
+                val insertedUri = content.insert(uri, contentValues)
+                if (insertedUri != null) {
+                    content.update(insertedUri, getVideoContentValues(ctx, insertedUri), null, null)
+                    Logger.i(TAG, "Video inserted successfully: $insertedUri")
+                    mMainHandler.post { mCaptureCallBack?.onComplete(insertedUri) }
+                } else {
+                    Logger.e(TAG, "Failed to insert video")
+                }
+                /*
                 val uri2 = content.insert(uri, getVideoContentValues(videoPath))
                 mMainHandler.post {
                     mCaptureCallBack?.onComplete(uri2)
-                    //mCaptureCallBack?.onComplete(this.path)
                 }
+                 */
             }
         }
     }
 
-    private fun getVideoContentValues(path: String): ContentValues {
-        val file = File(path)
+    private fun getVideoContentValues(ctx: Context, uri: Uri): ContentValues {
+        val file = File(uri.path ?: "")
         val values = ContentValues()
         //values.put(MediaStore.Video.Media.DATA, path)
         values.put(MediaStore.Video.Media.DISPLAY_NAME, file.name)
         values.put(MediaStore.Video.Media.MIME_TYPE, "video/mp4")
         values.put(MediaStore.Video.Media.SIZE, file.length())
-        values.put(MediaStore.Video.Media.DURATION, getLocalVideoDuration(file.path))
+        values.put(MediaStore.Video.Media.DURATION, getLocalVideoDuration(ctx, uri))
         if (MediaUtils.isAboveQ()) {
             val relativePath =  "${Environment.DIRECTORY_DCIM}${File.separator}Camera"
             val dateExpires = (System.currentTimeMillis() + DateUtils.DAY_IN_MILLIS) / 1000
@@ -279,13 +300,26 @@ class Mp4Muxer(
 
     fun isMuxerStarter() = mVideoTrackerIndex != -1 && (mAudioTrackerIndex != -1 || isVideoOnly)
 
-    private fun getLocalVideoDuration(filePath: String?): Long {
+    private fun getLocalVideoDuration(context: Context, uri: Uri): Long {
+        /*
         return try {
             val mmr = MediaMetadataRetriever()
             mmr.setDataSource(filePath)
             mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)?.toLong() ?:0L
         } catch (e: Exception) {
             e.printStackTrace()
+            0L
+        }
+
+         */
+
+        return try {
+            val mmr = MediaMetadataRetriever()
+            mmr.setDataSource(context, uri)
+            mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)?.toLong() ?: 0L
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Logger.e(TAG, "Failed to get video duration: ${e.localizedMessage}")
             0L
         }
     }
