@@ -255,11 +255,12 @@ class Mp4Muxer(
                 Logger.w(TAG,"Video file does not exist")
                 return
             }
+            Logger.i(TAG,"Video path: $videoPath")
             ctx.contentResolver.let { content ->
                 val volume = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
                 val uri = content.insert(volume, getVideoContentValues(file))
                 uri?.let {
-                    Logger.i(TAG,"Video file inserted")
+                    Logger.i(TAG,"Video file inserted.")
                     // Now you have a URI for the inserted video, you can copy the file into it
                     content.openOutputStream(it)?.use { outputStream ->
                         file.inputStream().use { inputStream ->
