@@ -283,6 +283,19 @@ class Mp4Muxer(
     }
 
     private fun getVideoContentValues(file: File): ContentValues {
+        fun debugLogContentValues(contentValues: ContentValues) {
+            val stringBuilder = StringBuilder("ContentValues: [")
+            for (key in contentValues.keySet()) {
+                val value = contentValues.get(key)
+                stringBuilder.append("$key=$value, ")
+            }
+            if (stringBuilder.endsWith(", ")) {
+                stringBuilder.setLength(stringBuilder.length - 2) // Remove trailing comma and space
+            }
+            stringBuilder.append("]")
+            Logger.d(TAG, stringBuilder.toString())
+        }
+
         val values = ContentValues()
         //values.put(MediaStore.Video.Media.DATA, path)
         values.put(MediaStore.Video.Media.DISPLAY_NAME, file.name)
@@ -295,6 +308,9 @@ class Mp4Muxer(
             values.put(MediaStore.Video.Media.RELATIVE_PATH, relativePath)
             values.put(MediaStore.Video.Media.DATE_EXPIRES, dateExpires)
         }
+
+        debugLogContentValues(values)
+
         return values
     }
 
