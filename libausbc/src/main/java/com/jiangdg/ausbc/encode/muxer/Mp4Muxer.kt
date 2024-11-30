@@ -284,6 +284,7 @@ class Mp4Muxer(
 
     private fun getVideoContentValues(file: File): ContentValues {
         fun debugLogContentValues(contentValues: ContentValues) {
+            Logger.d(TAG,"")
             val stringBuilder = StringBuilder("ContentValues: [")
             for (key in contentValues.keySet()) {
                 val value = contentValues.get(key)
