@@ -5,6 +5,7 @@ plugins {
 import org.apache.tools.ant.taskdefs.condition.Os
 
 android {
+	//namespace 'com.jiangdg.uvccamera'
 	compileSdk rootProject.ext.versionCompiler
 
 	compileOptions {
@@ -52,7 +53,8 @@ publishing {
 			version = '3.6.5'
 
 			afterEvaluate {
-				from components.release
+				//from components.release
+				components.findByName("release")
 			}
 		}
 	}

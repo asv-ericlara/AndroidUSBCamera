@@ -5,6 +5,7 @@ plugins {
 }
 
 android {
+    //namespace 'com.jiangdg.natives'
     compileSdk rootProject.ext.versionCompiler
 
     defaultConfig {
@@ -24,8 +25,8 @@ android {
             }
         }
     }
-    // Specify NDK version
-   // ndkVersion "21.4.7075529"
+
+    //ndkVersion '21.3.6528147'  // Use NDK r21e
 
 //    externalNativeBuild {
 //        cmake {
@@ -52,7 +53,6 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
-  ///  ndkVersion '21.4.7075529'
 }
 
 dependencies {
